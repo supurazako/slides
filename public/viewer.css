@@ -168,15 +168,6 @@ a {
   stroke-width: 1.8;
 }
 
-.fullscreen-exit-icon,
-.fullscreen-button[aria-pressed="true"] .fullscreen-enter-icon {
-  display: none;
-}
-
-.fullscreen-button[aria-pressed="true"] .fullscreen-exit-icon {
-  display: block;
-}
-
 .viewer-counter {
   flex: 0 0 auto;
   padding-top: 8px;

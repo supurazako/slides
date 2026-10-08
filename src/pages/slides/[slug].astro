@@ -47,11 +47,11 @@ const firstPage = slide.pages[0];
             aria-pressed="false"
             title="全画面表示"
           >
-            <svg class="fullscreen-enter-icon" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M3 8V3h5M16 3h5v5M21 16v5h-5M8 21H3v-5" />
-            </svg>
-            <svg class="fullscreen-exit-icon" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M8 3v5H3M16 8h5V3M21 16h-5v5M8 21v-5H3" />
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                data-fullscreen-path
+                d="M3 8V3h5M16 3h5v5M21 16v5h-5M8 21H3v-5"
+              />
             </svg>
           </button>
           <span class="viewer-counter" data-counter aria-live="polite">1 / {slide.pages.length}</span>
@@ -110,6 +110,7 @@ const firstPage = slide.pages[0];
       const image = viewer.querySelector("[data-page-image]");
       const counter = viewer.querySelector("[data-counter]");
       const fullscreenButton = viewer.querySelector("[data-fullscreen]");
+      const fullscreenPath = fullscreenButton.querySelector("[data-fullscreen-path]");
       const previousButton = viewer.querySelector("[data-previous]");
       const nextButton = viewer.querySelector("[data-next]");
       const progress = viewer.querySelector("[data-progress]");
@@ -197,6 +198,12 @@ const firstPage = slide.pages[0];
         fullscreenButton.setAttribute(
           "aria-label",
           isFullscreen ? "全画面表示を終了" : "全画面表示",
+        );
+        fullscreenPath.setAttribute(
+          "d",
+          isFullscreen
+            ? "M9 3v6H3M15 9h6V3M21 15h-6v6M9 21v-6H3"
+            : "M3 8V3h5M16 3h5v5M21 16v5h-5M8 21H3v-5",
         );
         fullscreenButton.title = isFullscreen ? "全画面表示を終了" : "全画面表示";
         revealControls();
