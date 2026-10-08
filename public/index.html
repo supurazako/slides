@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="supurazako の発表スライドをまとめたギャラリーです。"
+    />
+    <meta name="theme-color" content="#f4f3ef" />
+    <title>Slide Gallery — supurazako</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="./app.js" defer></script>
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="site-header">
+        <p class="eyebrow"><span class="brand-mark" aria-hidden="true">s</span> supurazako</p>
+        <h1>Slide Gallery<span class="title-period">.</span></h1>
+        <p class="intro">発表したスライドを、ここにまとめています。</p>
+      </header>
+
+      <main aria-label="スライド一覧">
+        <div class="list-heading">
+          <p class="section-label">ARCHIVE</p>
+          <p class="slide-count" id="slideCount" aria-live="polite">読み込み中…</p>
+        </div>
+
+        <section class="gallery" id="slideList" aria-label="スライド">
+          <p class="empty-state" id="emptyState" hidden>スライドはまだありません。</p>
+        </section>
+
+        <p class="load-error" id="loadError" role="alert" hidden>
+          一覧を読み込めませんでした。時間をおいて再読み込みしてください。
+        </p>
+      </main>
+
+      <footer class="site-footer">
+        <span>supurazako</span>
+        <span>SLIDE ARCHIVE</span>
+      </footer>
+    </div>
+  </body>
+</html>

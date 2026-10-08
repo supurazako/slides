@@ -1,0 +1,13 @@
+{
+  "name": "supurazako-slides",
+  "compatibility_date": "2026-10-08",
+  "assets": {
+    "directory": "./public"
+  },
+  "routes": [
+    {
+      "pattern": "slide.supurazako.com",
+      "custom_domain": true
+    }
+  ]
+}
