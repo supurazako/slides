@@ -139,9 +139,9 @@ a {
   width: 42px;
   height: 42px;
   place-items: center;
-  border: 1px solid rgb(255 255 255 / 15%);
-  border-radius: 50%;
-  background: rgb(28 28 28 / 78%);
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
   color: #fff;
   cursor: pointer;
   pointer-events: auto;
@@ -150,7 +150,12 @@ a {
 
 .fullscreen-button:hover,
 .fullscreen-button:focus-visible {
-  background: rgb(60 60 60 / 92%);
+  background: rgb(255 255 255 / 14%);
+}
+
+.fullscreen-button:focus-visible {
+  outline: 2px solid rgb(255 255 255 / 88%);
+  outline-offset: 2px;
 }
 
 .fullscreen-button:disabled {
@@ -159,13 +164,9 @@ a {
 }
 
 .fullscreen-button svg {
-  width: 21px;
-  height: 21px;
-  fill: none;
-  stroke: currentColor;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 1.8;
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
 }
 
 .viewer-counter {
@@ -314,8 +315,8 @@ a {
   }
 
   .fullscreen-button svg {
-    width: 19px;
-    height: 19px;
+    width: 22px;
+    height: 22px;
   }
 
   .viewer-counter {
