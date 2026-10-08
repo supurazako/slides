@@ -57,10 +57,11 @@ a {
 
 h1 {
   margin: 0;
-  font-size: clamp(3.1rem, 8vw, 6.9rem);
-  font-weight: 600;
-  letter-spacing: -0.075em;
-  line-height: 0.95;
+  font-family: var(--serif);
+  font-size: clamp(2rem, 3.6vw, 3rem);
+  font-weight: 400;
+  letter-spacing: -0.045em;
+  line-height: 1.1;
 }
 
 .gallery {
