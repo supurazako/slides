@@ -102,6 +102,36 @@ const firstPage = slide.pages[0];
         ? Math.min(pageFromUrl, pages.length) - 1
         : 0;
       let pointerStart = null;
+      let hideControlsTimer;
+      let keyboardMode = false;
+
+      function scheduleControlsHide() {
+        window.clearTimeout(hideControlsTimer);
+        if (keyboardMode && viewer.matches(":focus-within")) return;
+
+        hideControlsTimer = window.setTimeout(() => {
+          if (!(keyboardMode && viewer.matches(":focus-within"))) {
+            viewer.classList.add("controls-hidden");
+          }
+        }, 2600);
+      }
+
+      function revealControls() {
+        viewer.classList.remove("controls-hidden");
+        scheduleControlsHide();
+      }
+
+      function handlePointerActivity() {
+        keyboardMode = false;
+        viewer.classList.remove("keyboard-focus");
+        revealControls();
+      }
+
+      function handleKeyboardActivity() {
+        keyboardMode = true;
+        if (viewer.matches(":focus-within")) viewer.classList.add("keyboard-focus");
+        revealControls();
+      }
 
       function preload(pageIndex) {
         if (pageIndex < 0 || pageIndex >= pages.length) return;
@@ -128,6 +158,22 @@ const firstPage = slide.pages[0];
 
       previousButton.addEventListener("click", () => showPage(currentPage - 1));
       nextButton.addEventListener("click", () => showPage(currentPage + 1));
+      viewer.addEventListener("pointermove", handlePointerActivity, { passive: true });
+      viewer.addEventListener("pointerdown", handlePointerActivity, { passive: true });
+      viewer.addEventListener("keydown", handleKeyboardActivity);
+      viewer.addEventListener("focusin", () => {
+        if (keyboardMode) viewer.classList.add("keyboard-focus");
+        revealControls();
+      });
+      viewer.addEventListener("focusout", () => {
+        window.setTimeout(() => {
+          if (!viewer.matches(":focus-within")) {
+            keyboardMode = false;
+            viewer.classList.remove("keyboard-focus");
+          }
+          scheduleControlsHide();
+        }, 0);
+      });
 
       window.addEventListener("keydown", (event) => {
         if (event.target instanceof HTMLElement && event.target.isContentEditable) return;
@@ -164,6 +210,7 @@ const firstPage = slide.pages[0];
       });
 
       showPage(currentPage);
+      revealControls();
     </script>
   </body>
 </html>

@@ -74,6 +74,7 @@ a {
   padding: 18px 22px;
   background: linear-gradient(180deg, rgb(0 0 0 / 56%), transparent);
   pointer-events: none;
+  transition: opacity 220ms ease, visibility 220ms ease;
 }
 
 .viewer-heading {
@@ -145,7 +146,7 @@ a {
   cursor: pointer;
   font-size: 2rem;
   opacity: 0.72;
-  transition: background 160ms ease, opacity 160ms ease;
+  transition: background 160ms ease, opacity 220ms ease, visibility 220ms ease;
 }
 
 .page-button:hover,
@@ -178,6 +179,26 @@ a {
   display: flex;
   justify-content: flex-end;
   pointer-events: none;
+  transition: opacity 220ms ease, visibility 220ms ease;
+}
+
+.viewer-shell.controls-hidden {
+  cursor: none;
+}
+
+.viewer-shell.controls-hidden .viewer-toolbar,
+.viewer-shell.controls-hidden .viewer-footer,
+.viewer-shell.controls-hidden .page-button {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.viewer-shell.keyboard-focus:focus-within .viewer-toolbar,
+.viewer-shell.keyboard-focus:focus-within .viewer-footer,
+.viewer-shell.keyboard-focus:focus-within .page-button {
+  visibility: visible;
+  opacity: 1;
 }
 
 .viewer-progress {
