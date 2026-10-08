@@ -77,6 +77,12 @@ a {
   transition: opacity 220ms ease, visibility 220ms ease;
 }
 
+.viewer-shell:fullscreen {
+  width: 100%;
+  height: 100%;
+  background: #111110;
+}
+
 .viewer-heading {
   display: flex;
   min-width: 0;
@@ -119,6 +125,56 @@ a {
   text-overflow: ellipsis;
   text-shadow: 0 1px 4px rgb(0 0 0 / 65%);
   white-space: nowrap;
+}
+
+.viewer-actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 14px;
+}
+
+.fullscreen-button {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 1px solid rgb(255 255 255 / 15%);
+  border-radius: 50%;
+  background: rgb(28 28 28 / 78%);
+  color: #fff;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: background 160ms ease, opacity 160ms ease;
+}
+
+.fullscreen-button:hover,
+.fullscreen-button:focus-visible {
+  background: rgb(60 60 60 / 92%);
+}
+
+.fullscreen-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.fullscreen-button svg {
+  width: 21px;
+  height: 21px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.fullscreen-exit-icon,
+.fullscreen-button[aria-pressed="true"] .fullscreen-enter-icon {
+  display: none;
+}
+
+.fullscreen-button[aria-pressed="true"] .fullscreen-exit-icon {
+  display: block;
 }
 
 .viewer-counter {
@@ -253,8 +309,22 @@ a {
   }
 
   .viewer-title {
-    max-width: calc(100vw - 150px);
+    max-width: calc(100vw - 180px);
     font-size: 0.82rem;
+  }
+
+  .viewer-actions {
+    gap: 8px;
+  }
+
+  .fullscreen-button {
+    width: 36px;
+    height: 36px;
+  }
+
+  .fullscreen-button svg {
+    width: 19px;
+    height: 19px;
   }
 
   .viewer-counter {

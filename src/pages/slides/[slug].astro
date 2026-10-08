@@ -38,7 +38,24 @@ const firstPage = slide.pages[0];
           </a>
           <h1 class="viewer-title">{slide.title}</h1>
         </div>
-        <span class="viewer-counter" data-counter aria-live="polite">1 / {slide.pages.length}</span>
+        <div class="viewer-actions">
+          <button
+            class="fullscreen-button"
+            data-fullscreen
+            type="button"
+            aria-label="全画面表示"
+            aria-pressed="false"
+            title="全画面表示"
+          >
+            <svg class="fullscreen-enter-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 8V3h5M16 3h5v5M21 16v5h-5M8 21H3v-5" />
+            </svg>
+            <svg class="fullscreen-exit-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M8 3v5H3M16 8h5V3M21 16h-5v5M8 21v-5H3" />
+            </svg>
+          </button>
+          <span class="viewer-counter" data-counter aria-live="polite">1 / {slide.pages.length}</span>
+        </div>
       </header>
 
       <section class="viewer-stage" aria-label="スライド">
@@ -92,6 +109,7 @@ const firstPage = slide.pages[0];
       const pages = JSON.parse(viewer.dataset.pages);
       const image = viewer.querySelector("[data-page-image]");
       const counter = viewer.querySelector("[data-counter]");
+      const fullscreenButton = viewer.querySelector("[data-fullscreen]");
       const previousButton = viewer.querySelector("[data-previous]");
       const nextButton = viewer.querySelector("[data-next]");
       const progress = viewer.querySelector("[data-progress]");
@@ -158,6 +176,31 @@ const firstPage = slide.pages[0];
 
       previousButton.addEventListener("click", () => showPage(currentPage - 1));
       nextButton.addEventListener("click", () => showPage(currentPage + 1));
+      if (typeof viewer.requestFullscreen !== "function") {
+        fullscreenButton.disabled = true;
+        fullscreenButton.title = "このブラウザーでは全画面表示を利用できません";
+      }
+      fullscreenButton.addEventListener("click", async () => {
+        try {
+          if (document.fullscreenElement === viewer) {
+            await document.exitFullscreen();
+          } else if (typeof viewer.requestFullscreen === "function") {
+            await viewer.requestFullscreen();
+          }
+        } catch {
+          fullscreenButton.title = "全画面表示を開始できませんでした";
+        }
+      });
+      document.addEventListener("fullscreenchange", () => {
+        const isFullscreen = document.fullscreenElement === viewer;
+        fullscreenButton.setAttribute("aria-pressed", String(isFullscreen));
+        fullscreenButton.setAttribute(
+          "aria-label",
+          isFullscreen ? "全画面表示を終了" : "全画面表示",
+        );
+        fullscreenButton.title = isFullscreen ? "全画面表示を終了" : "全画面表示";
+        revealControls();
+      });
       viewer.addEventListener("pointermove", handlePointerActivity, { passive: true });
       viewer.addEventListener("pointerdown", handlePointerActivity, { passive: true });
       viewer.addEventListener("keydown", handleKeyboardActivity);
@@ -188,7 +231,12 @@ const firstPage = slide.pages[0];
           event.preventDefault();
           showPage(currentPage + 1);
         } else if (event.key === "Escape") {
-          window.location.assign("/");
+          if (document.fullscreenElement) {
+            event.preventDefault();
+            void document.exitFullscreen();
+          } else {
+            window.location.assign("/");
+          }
         }
       });
 
