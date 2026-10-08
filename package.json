@@ -1,0 +1,12 @@
+{
+  "name": "supurazako-slide-gallery",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "slides:build": "node scripts/build-slides.mjs",
+    "predev": "npm run slides:build",
+    "dev": "npx wrangler dev",
+    "predeploy": "npm run slides:build",
+    "deploy": "npx wrangler deploy"
+  }
+}
