@@ -30,6 +30,32 @@
         "/decks/moq-sechack/page-021.jpg"
       ],
       "date": "2026-09-26"
+    },
+    {
+      "slug": "page-001",
+      "title": "標準化動向を追うことのすゝめ",
+      "format": "PDF",
+      "href": "/slides/page-001.pdf",
+      "preview": "/decks/page-001/page-001.jpg",
+      "pages": [
+        "/decks/page-001/page-001.jpg",
+        "/decks/page-001/page-002.jpg",
+        "/decks/page-001/page-003.jpg",
+        "/decks/page-001/page-004.jpg",
+        "/decks/page-001/page-005.jpg",
+        "/decks/page-001/page-006.jpg",
+        "/decks/page-001/page-007.jpg",
+        "/decks/page-001/page-008.jpg",
+        "/decks/page-001/page-009.jpg",
+        "/decks/page-001/page-010.jpg",
+        "/decks/page-001/page-011.jpg",
+        "/decks/page-001/page-012.jpg",
+        "/decks/page-001/page-013.jpg",
+        "/decks/page-001/page-014.jpg",
+        "/decks/page-001/page-015.jpg",
+        "/decks/page-001/page-016.jpg"
+      ],
+      "date": "2026-10-18"
     }
   ]
 }
