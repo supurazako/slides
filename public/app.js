@@ -1,7 +1,4 @@
 const list = document.querySelector("#slideList");
-const count = document.querySelector("#slideCount");
-const emptyState = document.querySelector("#emptyState");
-const loadError = document.querySelector("#loadError");
 
 function getHref(value) {
   if (typeof value !== "string" || value.trim() === "") return null;
@@ -124,12 +121,8 @@ async function loadSlides() {
       .sort((a, b) => (Date.parse(b.date) || 0) - (Date.parse(a.date) || 0));
 
     for (const item of cards) list.append(item.card);
-    count.textContent = `${cards.length} ${cards.length === 1 ? "SLIDE" : "SLIDES"}`;
-    emptyState.hidden = cards.length > 0;
-  } catch {
-    count.textContent = "—";
-    emptyState.hidden = true;
-    loadError.hidden = false;
+  } catch (error) {
+    console.error("Unable to load the slide list.", error);
   }
 }
 

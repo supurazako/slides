@@ -41,37 +41,18 @@ a {
 }
 
 .site-header {
-  padding: clamp(56px, 9vw, 112px) 0 clamp(38px, 6vw, 72px);
-}
-
-.eyebrow,
-.section-label,
-.slide-count,
-.site-footer {
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.15em;
+  padding: clamp(56px, 9vw, 112px) 0 clamp(46px, 6vw, 72px);
 }
 
 .eyebrow {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 0 0 26px;
-  color: #5d5b55;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
 }
 
-.brand-mark {
-  display: grid;
-  width: 25px;
-  height: 25px;
-  place-items: center;
-  border: 1px solid var(--accent);
-  border-radius: 50%;
-  color: var(--accent);
-  font-family: var(--serif);
-  font-size: 0.9rem;
-  letter-spacing: 0;
+.eyebrow {
+  margin: 0 0 22px;
+  color: #5d5b55;
 }
 
 h1 {
@@ -80,43 +61,6 @@ h1 {
   font-weight: 600;
   letter-spacing: -0.075em;
   line-height: 0.95;
-}
-
-.title-period {
-  color: var(--accent);
-  font-family: var(--serif);
-  font-weight: 400;
-}
-
-.intro {
-  margin: 26px 0 0;
-  color: #66645e;
-  font-size: 0.98rem;
-  letter-spacing: 0.015em;
-}
-
-.list-heading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 18px;
-  padding-bottom: 13px;
-  border-bottom: 1px solid var(--line);
-}
-
-.section-label,
-.slide-count {
-  margin: 0;
-}
-
-.section-label {
-  color: var(--accent);
-}
-
-.slide-count {
-  color: var(--muted);
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.1em;
 }
 
 .gallery {
@@ -294,36 +238,6 @@ h1 {
 .card:focus-visible {
   outline: 3px solid var(--accent);
   outline-offset: 6px;
-}
-
-.empty-state,
-.load-error {
-  grid-column: 1 / -1;
-  margin: 0;
-  padding: 52px 24px;
-  border: 1px dashed #c9c6bd;
-  color: var(--muted);
-  text-align: center;
-}
-
-.load-error {
-  margin-top: 16px;
-  border-color: #c9856c;
-  color: #7a3b27;
-}
-
-[hidden] {
-  display: none !important;
-}
-
-.site-footer {
-  display: flex;
-  justify-content: space-between;
-  margin-top: clamp(68px, 10vw, 112px);
-  padding: 22px 0 30px;
-  border-top: 1px solid var(--line);
-  color: var(--muted);
-  font-size: 0.65rem;
 }
 
 @media (max-width: 680px) {
