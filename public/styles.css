@@ -59,7 +59,7 @@ h1 {
   margin: 0;
   font-size: clamp(2rem, 3.6vw, 3rem);
   font-weight: 600;
-  letter-spacing: -0.075em;
+  letter-spacing: -0.045em;
   line-height: 0.95;
 }
 
