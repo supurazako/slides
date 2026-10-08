@@ -1,0 +1,169 @@
+---
+import manifest from "../../data/slides.json";
+
+export function getStaticPaths() {
+  return manifest.slides
+    .filter((slide) => slide.slug && Array.isArray(slide.pages) && slide.pages.length > 0)
+    .map((slide) => ({
+      params: { slug: slide.slug },
+      props: { slide },
+    }));
+}
+
+const { slide } = Astro.props;
+const firstPage = slide.pages[0];
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#171715" />
+    <meta name="description" content={`${slide.title} — supurazako Slide Gallery`} />
+    <title>{slide.title} — Slide Gallery</title>
+    <link rel="stylesheet" href="/viewer.css" />
+  </head>
+  <body class="viewer-body">
+    <main
+      class="viewer-shell"
+      data-viewer
+      data-pages={JSON.stringify(slide.pages)}
+      data-title={slide.title}
+    >
+      <header class="viewer-toolbar">
+        <div class="viewer-heading">
+          <a class="viewer-back" href="/" aria-label="スライド一覧に戻る">
+            <span aria-hidden="true">←</span>
+          </a>
+          <h1 class="viewer-title">{slide.title}</h1>
+        </div>
+        <span class="viewer-counter" data-counter aria-live="polite">1 / {slide.pages.length}</span>
+      </header>
+
+      <section class="viewer-stage" aria-label="スライド">
+        <img
+          class="viewer-image"
+          data-page-image
+          src={firstPage}
+          alt={`${slide.title} — 1ページ目`}
+          draggable="false"
+          fetchpriority="high"
+        />
+        <button
+          class="page-button page-button--previous"
+          data-previous
+          type="button"
+          aria-label="前のページ"
+          disabled
+        >
+          <span aria-hidden="true">←</span>
+        </button>
+        <button
+          class="page-button page-button--next"
+          data-next
+          type="button"
+          aria-label="次のページ"
+          disabled={slide.pages.length < 2}
+        >
+          <span aria-hidden="true">→</span>
+        </button>
+      </section>
+
+      <div
+        class="viewer-progress"
+        role="progressbar"
+        aria-label="スライドの進行状況"
+        aria-valuemin="1"
+        aria-valuemax={slide.pages.length}
+        aria-valuenow="1"
+        data-progress
+      >
+        <span data-progress-fill></span>
+      </div>
+
+      <footer class="viewer-footer">
+        <p class="viewer-hint">← → or Space</p>
+      </footer>
+    </main>
+
+    <script>
+      const viewer = document.querySelector("[data-viewer]");
+      const pages = JSON.parse(viewer.dataset.pages);
+      const image = viewer.querySelector("[data-page-image]");
+      const counter = viewer.querySelector("[data-counter]");
+      const previousButton = viewer.querySelector("[data-previous]");
+      const nextButton = viewer.querySelector("[data-next]");
+      const progress = viewer.querySelector("[data-progress]");
+      const progressFill = viewer.querySelector("[data-progress-fill]");
+      const title = viewer.dataset.title;
+      const pageFromUrl = Number(new URL(window.location.href).searchParams.get("page"));
+      let currentPage = Number.isInteger(pageFromUrl) && pageFromUrl > 0
+        ? Math.min(pageFromUrl, pages.length) - 1
+        : 0;
+      let pointerStart = null;
+
+      function preload(pageIndex) {
+        if (pageIndex < 0 || pageIndex >= pages.length) return;
+        const nextImage = new Image();
+        nextImage.src = pages[pageIndex];
+      }
+
+      function showPage(pageIndex) {
+        currentPage = Math.max(0, Math.min(pageIndex, pages.length - 1));
+        image.src = pages[currentPage];
+        image.alt = `${title} — ${currentPage + 1}ページ目`;
+        counter.textContent = `${currentPage + 1} / ${pages.length}`;
+        previousButton.disabled = currentPage === 0;
+        nextButton.disabled = currentPage === pages.length - 1;
+        progress.setAttribute("aria-valuenow", String(currentPage + 1));
+        progressFill.style.width = `${((currentPage + 1) / pages.length) * 100}%`;
+
+        const url = new URL(window.location.href);
+        url.searchParams.set("page", String(currentPage + 1));
+        window.history.replaceState(null, "", url);
+        preload(currentPage + 1);
+        preload(currentPage - 1);
+      }
+
+      previousButton.addEventListener("click", () => showPage(currentPage - 1));
+      nextButton.addEventListener("click", () => showPage(currentPage + 1));
+
+      window.addEventListener("keydown", (event) => {
+        if (event.target instanceof HTMLElement && event.target.isContentEditable) return;
+        if (["INPUT", "TEXTAREA", "SELECT"].includes(event.target?.tagName)) return;
+        const focusedControl = event.target.closest?.("a, button");
+        if (focusedControl && [" ", "Enter"].includes(event.key)) return;
+
+        if (event.key === "ArrowLeft") {
+          event.preventDefault();
+          showPage(currentPage - 1);
+        } else if (["ArrowRight", " ", "Enter"].includes(event.key)) {
+          event.preventDefault();
+          showPage(currentPage + 1);
+        } else if (event.key === "Escape") {
+          window.location.assign("/");
+        }
+      });
+
+      viewer.querySelector(".viewer-stage").addEventListener("pointerdown", (event) => {
+        pointerStart = { x: event.clientX, y: event.clientY };
+      });
+
+      viewer.querySelector(".viewer-stage").addEventListener("pointerup", (event) => {
+        if (!pointerStart) return;
+        const deltaX = event.clientX - pointerStart.x;
+        const deltaY = event.clientY - pointerStart.y;
+        pointerStart = null;
+        if (Math.abs(deltaX) < 56 || Math.abs(deltaX) < Math.abs(deltaY)) return;
+        showPage(currentPage + (deltaX < 0 ? 1 : -1));
+      });
+
+      viewer.querySelector(".viewer-stage").addEventListener("pointercancel", () => {
+        pointerStart = null;
+      });
+
+      showPage(currentPage);
+    </script>
+  </body>
+</html>

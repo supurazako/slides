@@ -4,9 +4,15 @@
   "type": "module",
   "scripts": {
     "slides:build": "node scripts/build-slides.mjs",
+    "dev": "astro dev",
     "predev": "npm run slides:build",
-    "dev": "npx wrangler dev",
-    "predeploy": "npm run slides:build",
-    "deploy": "npx wrangler deploy"
+    "prebuild": "npm run slides:build",
+    "build": "astro build",
+    "predeploy": "npm run build",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "astro": "^7.3.7",
+    "wrangler": "^4.148.0"
   }
 }

@@ -2,7 +2,7 @@
   "name": "supurazako-slides",
   "compatibility_date": "2026-10-08",
   "assets": {
-    "directory": "./public"
+    "directory": "./dist"
   },
   "routes": [
     {

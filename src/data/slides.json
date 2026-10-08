@@ -1,0 +1,35 @@
+{
+  "slides": [
+    {
+      "slug": "moq-sechack",
+      "title": "Media over QUICが欲しくなる話",
+      "format": "PDF",
+      "href": "/slides/moq-sechack.pdf",
+      "preview": "/decks/moq-sechack/page-001.jpg",
+      "pages": [
+        "/decks/moq-sechack/page-001.jpg",
+        "/decks/moq-sechack/page-002.jpg",
+        "/decks/moq-sechack/page-003.jpg",
+        "/decks/moq-sechack/page-004.jpg",
+        "/decks/moq-sechack/page-005.jpg",
+        "/decks/moq-sechack/page-006.jpg",
+        "/decks/moq-sechack/page-007.jpg",
+        "/decks/moq-sechack/page-008.jpg",
+        "/decks/moq-sechack/page-009.jpg",
+        "/decks/moq-sechack/page-010.jpg",
+        "/decks/moq-sechack/page-011.jpg",
+        "/decks/moq-sechack/page-012.jpg",
+        "/decks/moq-sechack/page-013.jpg",
+        "/decks/moq-sechack/page-014.jpg",
+        "/decks/moq-sechack/page-015.jpg",
+        "/decks/moq-sechack/page-016.jpg",
+        "/decks/moq-sechack/page-017.jpg",
+        "/decks/moq-sechack/page-018.jpg",
+        "/decks/moq-sechack/page-019.jpg",
+        "/decks/moq-sechack/page-020.jpg",
+        "/decks/moq-sechack/page-021.jpg"
+      ],
+      "date": "2026-09-26"
+    }
+  ]
+}

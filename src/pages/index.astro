@@ -1,0 +1,74 @@
+---
+import manifest from "../data/slides.json";
+
+const slides = [...manifest.slides].sort(
+  (a, b) => (Date.parse(b.date || "") || 0) - (Date.parse(a.date || "") || 0),
+);
+
+function formatDate(value) {
+  if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
+  const date = new Date(`${value}T00:00:00Z`);
+  if (Number.isNaN(date.getTime())) return null;
+  return new Intl.DateTimeFormat("ja-JP", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    timeZone: "UTC",
+  }).format(date);
+}
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="supurazako の発表スライドをまとめたギャラリーです。"
+    />
+    <meta name="theme-color" content="#f4f3ef" />
+    <title>Slide Gallery — supurazako</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="site-header">
+        <p class="eyebrow">supurazako / MIYAMOTO Naoyuki</p>
+        <h1>Slide Gallery</h1>
+      </header>
+
+      <main>
+        <section class="gallery" aria-label="スライド一覧">
+          {slides.map((slide, index) => {
+            const viewerHref = slide.slug && slide.pages?.length
+              ? `/slides/${encodeURIComponent(slide.slug)}/`
+              : slide.href;
+            const displayDate = formatDate(slide.date);
+            const format = typeof slide.format === "string" && slide.format.trim()
+              ? slide.format.trim().toUpperCase()
+              : "SLIDE";
+
+            return (
+              <a class="card" href={viewerHref} aria-label={`${slide.title} (${format})を開く`}>
+                <div class="preview">
+                  <div class="cover-fallback" data-tone={index % 3} aria-hidden="true">
+                    <span class="cover-kicker">supurazako / slides</span>
+                    <strong class="cover-title">{slide.title}</strong>
+                  </div>
+                  {slide.preview && (
+                    <img class="preview-image" src={slide.preview} alt="" loading="lazy" />
+                  )}
+                  <span class="format">{format}</span>
+                  <span class="open-mark" aria-hidden="true">↗</span>
+                </div>
+                <h2>{slide.title}</h2>
+                {displayDate && <time datetime={slide.date}>{displayDate}</time>}
+              </a>
+            );
+          })}
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
