@@ -1,6 +1,6 @@
 {
   "formatVersion": 2,
-  "renderPipelineVersion": "pdfinfo-pdftotext-pdftoppm-scale1600-jpegq86-v1",
+  "renderPipelineVersion": "pdfinfo-pdftotext-pdftoppm-scale2560-jpegq92-v1",
   "sources": {
     "moq-sechack.pdf": {
       "sha1": "d028e7b0e8e92f1df5b27f71990c4d470e573a90",

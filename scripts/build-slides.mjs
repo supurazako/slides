@@ -13,7 +13,7 @@ const manualSlidesPath = path.join(projectRoot, "src", "data", "manual-slides.js
 const manifestPath = path.join(projectRoot, "src", "data", "slides.json");
 const cachePath = path.join(projectRoot, "src", "data", "slides-cache.json");
 const cacheFormatVersion = 2;
-const renderPipelineVersion = "pdfinfo-pdftotext-pdftoppm-scale1600-jpegq86-v1";
+const renderPipelineVersion = "pdfinfo-pdftotext-pdftoppm-scale2560-jpegq92-v1";
 
 function run(command, args) {
   const result = spawnSync(command, args, {
@@ -177,10 +177,10 @@ async function makeSlide({ absolutePath, relativePath, slug }) {
     run("pdftoppm", [
       "-f", String(pageNumber),
       "-l", String(pageNumber),
-      "-scale-to", "1600",
+      "-scale-to", "2560",
       "-singlefile",
       "-jpeg",
-      "-jpegopt", "quality=86",
+      "-jpegopt", "quality=92",
       absolutePath,
       outputPrefix,
     ]);
