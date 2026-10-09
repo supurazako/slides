@@ -1,6 +1,33 @@
 {
   "slides": [
     {
+      "slug": "moq-llsapporo",
+      "title": "Media over QUICとは",
+      "format": "PDF",
+      "href": "/slides/moq-llsapporo.pdf",
+      "preview": "/decks/moq-llsapporo/page-001.jpg",
+      "pages": [
+        "/decks/moq-llsapporo/page-001.jpg",
+        "/decks/moq-llsapporo/page-002.jpg",
+        "/decks/moq-llsapporo/page-003.jpg",
+        "/decks/moq-llsapporo/page-004.jpg",
+        "/decks/moq-llsapporo/page-005.jpg",
+        "/decks/moq-llsapporo/page-006.jpg",
+        "/decks/moq-llsapporo/page-007.jpg",
+        "/decks/moq-llsapporo/page-008.jpg",
+        "/decks/moq-llsapporo/page-009.jpg",
+        "/decks/moq-llsapporo/page-010.jpg",
+        "/decks/moq-llsapporo/page-011.jpg",
+        "/decks/moq-llsapporo/page-012.jpg",
+        "/decks/moq-llsapporo/page-013.jpg",
+        "/decks/moq-llsapporo/page-014.jpg",
+        "/decks/moq-llsapporo/page-015.jpg",
+        "/decks/moq-llsapporo/page-016.jpg",
+        "/decks/moq-llsapporo/page-017.jpg"
+      ],
+      "date": "2026-10-11"
+    },
+    {
       "slug": "moq-sechack",
       "title": "Media over QUICが欲しくなる話",
       "format": "PDF",
