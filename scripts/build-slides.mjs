@@ -12,7 +12,7 @@ const decksDir = path.join(publicDir, "decks");
 const manualSlidesPath = path.join(projectRoot, "src", "data", "manual-slides.json");
 const manifestPath = path.join(projectRoot, "src", "data", "slides.json");
 const cachePath = path.join(projectRoot, "src", "data", "slides-cache.json");
-const cacheFormatVersion = 1;
+const cacheFormatVersion = 2;
 const renderPipelineVersion = "pdfinfo-pdftotext-pdftoppm-scale1600-jpegq86-v1";
 
 function run(command, args) {
@@ -36,8 +36,8 @@ function run(command, args) {
   return result.stdout ?? "";
 }
 
-async function sha256File(filePath) {
-  const hash = createHash("sha256");
+async function sha1File(filePath) {
+  const hash = createHash("sha1");
   for await (const chunk of createReadStream(filePath)) hash.update(chunk);
   return hash.digest("hex");
 }
@@ -242,13 +242,13 @@ async function build() {
   for (const pdf of pdfs) {
     const slug = makeSlug(pdf.relativePath, usedSlugs);
     const sourcePath = pdf.relativePath.split(path.sep).join("/");
-    const sourceHash = await sha256File(pdf.absolutePath);
+    const sourceHash = await sha1File(pdf.absolutePath);
     const previousSource = previousSources[sourcePath];
     const previousSlide = previousSlidesBySlug.get(slug);
     const cachedPageCount = previousSource?.pageCount;
     const cacheCanBeReused =
       cacheMatchesPipeline &&
-      previousSource?.sha256 === sourceHash &&
+      previousSource?.sha1 === sourceHash &&
       previousSource?.slug === slug &&
       Number.isInteger(cachedPageCount) &&
       cachedPageCount > 0 &&
@@ -270,7 +270,7 @@ async function build() {
     const slide = await makeSlide({ ...pdf, slug });
     generatedSlides.push(slide);
     currentSources[sourcePath] = {
-      sha256: sourceHash,
+      sha1: sourceHash,
       slug,
       pageCount: slide.pages.length,
     };
