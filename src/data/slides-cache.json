@@ -1,0 +1,16 @@
+{
+  "formatVersion": 1,
+  "renderPipelineVersion": "pdfinfo-pdftotext-pdftoppm-scale1600-jpegq86-v1",
+  "sources": {
+    "moq-sechack.pdf": {
+      "sha256": "edd83a4d6dc03cb9ca5a50ff5521cc35dcbbc5254bf479d73c1c4348997dac02",
+      "slug": "moq-sechack",
+      "pageCount": 21
+    },
+    "standardization-trends.pdf": {
+      "sha256": "0709cccf19a6177fd125366fb4a0d2d081d42b7b7e52881261f73ced867baf3f",
+      "slug": "standardization-trends",
+      "pageCount": 16
+    }
+  }
+}

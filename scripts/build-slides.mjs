@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
-import { readdir, readFile, mkdir, rm, writeFile } from "node:fs/promises";
+import { createReadStream } from "node:fs";
+import { access, readdir, readFile, mkdir, rm, writeFile } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -10,6 +11,9 @@ const slidesDir = path.join(publicDir, "slides");
 const decksDir = path.join(publicDir, "decks");
 const manualSlidesPath = path.join(projectRoot, "src", "data", "manual-slides.json");
 const manifestPath = path.join(projectRoot, "src", "data", "slides.json");
+const cachePath = path.join(projectRoot, "src", "data", "slides-cache.json");
+const cacheFormatVersion = 1;
+const renderPipelineVersion = "pdfinfo-pdftotext-pdftoppm-scale1600-jpegq86-v1";
 
 function run(command, args) {
   const result = spawnSync(command, args, {
@@ -30,6 +34,36 @@ function run(command, args) {
   }
 
   return result.stdout ?? "";
+}
+
+async function sha256File(filePath) {
+  const hash = createHash("sha256");
+  for await (const chunk of createReadStream(filePath)) hash.update(chunk);
+  return hash.digest("hex");
+}
+
+async function readJson(filePath, fallback) {
+  try {
+    return JSON.parse(await readFile(filePath, "utf8"));
+  } catch (error) {
+    if (error.code === "ENOENT" || error instanceof SyntaxError) return fallback;
+    throw error;
+  }
+}
+
+async function deckPagesExist(slug, pageCount) {
+  const checks = await Promise.all(
+    Array.from({ length: pageCount }, async (_, index) => {
+      const pageName = `page-${String(index + 1).padStart(3, "0")}.jpg`;
+      try {
+        await access(path.join(decksDir, slug, pageName));
+        return true;
+      } catch {
+        return false;
+      }
+    }),
+  );
+  return checks.every(Boolean);
 }
 
 function cleanText(value) {
@@ -101,6 +135,10 @@ function makeSlug(relativePath, usedSlugs) {
   return slug;
 }
 
+function isGeneratedSlug(value) {
+  return typeof value === "string" && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value);
+}
+
 function publicPath(...segments) {
   return `/${segments
     .flatMap((segment) => segment.split(path.sep))
@@ -108,7 +146,7 @@ function publicPath(...segments) {
     .join("/")}`;
 }
 
-async function makeSlide({ absolutePath, relativePath, usedSlugs }) {
+async function makeSlide({ absolutePath, relativePath, slug }) {
   const info = run("pdfinfo", [absolutePath]);
   const pageCount = Number(info.match(/^Pages:\s*(\d+)\s*$/m)?.[1]);
   if (!Number.isInteger(pageCount) || pageCount < 1) {
@@ -128,8 +166,8 @@ async function makeSlide({ absolutePath, relativePath, usedSlugs }) {
       : firstPageTitle || path.basename(relativePath, path.extname(relativePath)),
   );
 
-  const slug = makeSlug(relativePath, usedSlugs);
   const deckDir = path.join(decksDir, slug);
+  await rm(deckDir, { recursive: true, force: true });
   await mkdir(deckDir, { recursive: true });
   const pages = [];
 
@@ -171,23 +209,99 @@ async function readManualSlides() {
 }
 
 async function build() {
-  const [pdfs, manualSlides] = await Promise.all([
+  const [pdfs, manualSlides, previousManifest, previousCache] = await Promise.all([
     findPdfs(slidesDir),
     readManualSlides(),
+    readJson(manifestPath, { slides: [] }),
+    readJson(cachePath, {}),
   ]);
-  await rm(decksDir, { recursive: true, force: true });
+  const oldManifest = previousManifest && typeof previousManifest === "object"
+    ? previousManifest
+    : { slides: [] };
+  const oldCache = previousCache && typeof previousCache === "object"
+    ? previousCache
+    : {};
   await mkdir(decksDir, { recursive: true });
   const usedSlugs = new Set();
   const generatedSlides = [];
+  const previousSources = oldCache.sources && typeof oldCache.sources === "object"
+    ? oldCache.sources
+    : {};
+  const previousSlidesBySlug = new Map(
+    (Array.isArray(oldManifest.slides) ? oldManifest.slides : [])
+      .filter((slide) => slide && typeof slide.slug === "string")
+      .map((slide) => [slide.slug, slide]),
+  );
+  const cacheMatchesPipeline =
+    oldCache.formatVersion === cacheFormatVersion &&
+    oldCache.renderPipelineVersion === renderPipelineVersion;
+  const currentSources = {};
+  let renderedCount = 0;
+  let reusedCount = 0;
 
   for (const pdf of pdfs) {
-    generatedSlides.push(await makeSlide({ ...pdf, usedSlugs }));
+    const slug = makeSlug(pdf.relativePath, usedSlugs);
+    const sourcePath = pdf.relativePath.split(path.sep).join("/");
+    const sourceHash = await sha256File(pdf.absolutePath);
+    const previousSource = previousSources[sourcePath];
+    const previousSlide = previousSlidesBySlug.get(slug);
+    const cachedPageCount = previousSource?.pageCount;
+    const cacheCanBeReused =
+      cacheMatchesPipeline &&
+      previousSource?.sha256 === sourceHash &&
+      previousSource?.slug === slug &&
+      Number.isInteger(cachedPageCount) &&
+      cachedPageCount > 0 &&
+      previousSlide?.href === publicPath("slides", pdf.relativePath) &&
+      Array.isArray(previousSlide?.pages) &&
+      previousSlide.pages.length === cachedPageCount &&
+      previousSlide.pages.every((page, index) =>
+        page === publicPath("decks", slug, `page-${String(index + 1).padStart(3, "0")}.jpg`),
+      ) &&
+      await deckPagesExist(slug, cachedPageCount);
+
+    if (cacheCanBeReused) {
+      generatedSlides.push(previousSlide);
+      currentSources[sourcePath] = previousSource;
+      reusedCount += 1;
+      continue;
+    }
+
+    const slide = await makeSlide({ ...pdf, slug });
+    generatedSlides.push(slide);
+    currentSources[sourcePath] = {
+      sha256: sourceHash,
+      slug,
+      pageCount: slide.pages.length,
+    };
+    renderedCount += 1;
+  }
+
+  const manualDeckSlugs = new Set(
+    manualSlides.map((slide) => slide.slug).filter((slug) => typeof slug === "string"),
+  );
+  for (const previousSource of Object.values(previousSources)) {
+    if (!isGeneratedSlug(previousSource?.slug) || manualDeckSlugs.has(previousSource.slug)) continue;
+    const stillUsed = Object.values(currentSources).some(
+      (source) => source.slug === previousSource.slug,
+    );
+    if (!stillUsed) {
+      await rm(path.join(decksDir, previousSource.slug), { recursive: true, force: true });
+    }
   }
 
   await mkdir(path.dirname(manifestPath), { recursive: true });
   const output = `${JSON.stringify({ slides: [...generatedSlides, ...manualSlides] }, null, 2)}\n`;
   await writeFile(manifestPath, output);
-  console.log(`Generated ${generatedSlides.length} PDF slide(s) in src/data/slides.json.`);
+  const cacheOutput = `${JSON.stringify({
+    formatVersion: cacheFormatVersion,
+    renderPipelineVersion,
+    sources: currentSources,
+  }, null, 2)}\n`;
+  await writeFile(cachePath, cacheOutput);
+  console.log(
+    `Rendered ${renderedCount} changed PDF slide(s); reused ${reusedCount} unchanged PDF slide(s).`,
+  );
 }
 
 build().catch((error) => {
