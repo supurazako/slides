@@ -22,6 +22,7 @@ body {
 body {
   height: 100vh;
   height: 100dvh;
+  height: var(--viewer-viewport-height, 100dvh);
   overflow: hidden;
   background: #111110;
 }

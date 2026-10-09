@@ -125,6 +125,18 @@ const firstPage = slide.pages[0];
       let hideControlsTimer;
       let keyboardMode = false;
 
+      function syncViewportHeight() {
+        const viewportHeight = window.visualViewport?.height || window.innerHeight;
+        document.documentElement.style.setProperty(
+          "--viewer-viewport-height",
+          `${Math.round(viewportHeight)}px`,
+        );
+      }
+
+      syncViewportHeight();
+      window.addEventListener("resize", syncViewportHeight, { passive: true });
+      window.visualViewport?.addEventListener("resize", syncViewportHeight, { passive: true });
+
       function scheduleControlsHide() {
         window.clearTimeout(hideControlsTimer);
         if (keyboardMode && viewer.matches(":focus-within")) return;
@@ -194,6 +206,7 @@ const firstPage = slide.pages[0];
         }
       });
       document.addEventListener("fullscreenchange", () => {
+        syncViewportHeight();
         const isFullscreen = document.fullscreenElement === viewer;
         fullscreenButton.setAttribute("aria-pressed", String(isFullscreen));
         fullscreenButton.setAttribute(
