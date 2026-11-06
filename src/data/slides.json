@@ -83,6 +83,36 @@
         "/decks/standardization-trends/page-016.jpg"
       ],
       "date": "2026-10-18"
+    },
+    {
+      "slug": "x-space-has-problem",
+      "title": "Xのスペースの遅延の問題",
+      "format": "PDF",
+      "href": "/slides/x-space-has-problem.pdf",
+      "preview": "/decks/x-space-has-problem/page-001.jpg",
+      "pages": [
+        "/decks/x-space-has-problem/page-001.jpg",
+        "/decks/x-space-has-problem/page-002.jpg",
+        "/decks/x-space-has-problem/page-003.jpg",
+        "/decks/x-space-has-problem/page-004.jpg",
+        "/decks/x-space-has-problem/page-005.jpg",
+        "/decks/x-space-has-problem/page-006.jpg",
+        "/decks/x-space-has-problem/page-007.jpg",
+        "/decks/x-space-has-problem/page-008.jpg",
+        "/decks/x-space-has-problem/page-009.jpg",
+        "/decks/x-space-has-problem/page-010.jpg",
+        "/decks/x-space-has-problem/page-011.jpg",
+        "/decks/x-space-has-problem/page-012.jpg",
+        "/decks/x-space-has-problem/page-013.jpg",
+        "/decks/x-space-has-problem/page-014.jpg",
+        "/decks/x-space-has-problem/page-015.jpg",
+        "/decks/x-space-has-problem/page-016.jpg",
+        "/decks/x-space-has-problem/page-017.jpg",
+        "/decks/x-space-has-problem/page-018.jpg",
+        "/decks/x-space-has-problem/page-019.jpg",
+        "/decks/x-space-has-problem/page-020.jpg"
+      ],
+      "date": "2026-11-08"
     }
   ]
 }
